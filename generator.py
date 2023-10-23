@@ -4,14 +4,12 @@ from PIL import Image
 import datetime as dt
 import random
 from scraper import daily_word_text
+from config import API_URL, headers
 # import sqlite3
 
 
 now = dt.datetime.now()
 filename = now.strftime("%d%m%y")
-
-API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
-headers = {"Authorization": "Bearer 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"}
 
 
 def query(payload):
