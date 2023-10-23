@@ -1,11 +1,12 @@
 from flask import Flask, render_template
-
+from scraper import daily_word_text, definition_text, main_atr_text
 app = Flask(__name__)
 
 
-@app.route('/gallery/', methods=["POST", "GET"])
+@app.route('/home/', methods=["POST", "GET"])
 def home():
-    return render_template('gallery.html')
+    word = daily_word_text.capitalize()
+    return render_template('home.html', word=word, definition=definition_text, atr=main_atr_text)
 
 
 @app.route('/', methods=["GET"])

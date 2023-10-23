@@ -3,9 +3,8 @@ import io
 from PIL import Image
 import datetime as dt
 import random
-from scraper import daily_word_text
+from scraper import daily_word_text, definition_text
 from config import API_URL, headers
-# import sqlite3
 
 
 now = dt.datetime.now()
@@ -18,24 +17,12 @@ def query(payload):
 
 
 image_bytes = query({
-    "inputs": f"{daily_word_text}",
+    "inputs": f"{daily_word_text}, {definition_text}",
     "seed": random.randint(0, 10000000),
-    "steps": 100,
-    "guidance_scale": 8.0,
+    "steps": 250,
+    "guidance_scale": 4.0,
 })
 
 image = Image.open(io.BytesIO(image_bytes))
 
-image.save(f"./content/{daily_word_text}{filename}.jpg")
-
-image_blob = io.BytesIO().getvalue()
-
-# db = sqlite3.connect("database.db")
-# c = db.cursor()
-#
-# c.execute("INSERT INTO images (name, data) VALUES (?, ?)",
-#           (f"{daily_word_text}{filename}.jpg", image_blob))
-#
-# db.commit()
-# db.close()
-
+image.save(f"./static/images/daily_word.jpg")
