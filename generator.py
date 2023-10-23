@@ -1,28 +1,43 @@
 import requests
 import io
 from PIL import Image
-import datetime as dt
 import random
-from scraper import daily_word_text, definition_text
-from config import API_URL, headers
+from scraper import scrape
+import os
+from worker import Celery
+from celery.schedules import crontab
+
+API_URL = os.environ["API_URL"]
+headers = {"Authorization": os.environ["AUTH_TOKEN"]}
+BROKER_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+
+app = Celery('app', broker=BROKER_URL)
+
+app.conf.timezone = 'UTC'
+CELERY_BEAT_SCHEDULE = {
+    'update-every-midnight': {
+
+        'task': 'generator.update',
+        'schedule': '0 4 * * *',
+    },
+}
 
 
-now = dt.datetime.now()
-filename = now.strftime("%d%m%y")
+@app.task
+def update():
+    daily_word_text, main_atr_text, definition_text = scrape()
+
+    image_bytes = query({
+        "inputs": f"{daily_word_text}, {definition_text}",
+        "seed": random.randint(0, 10000000),
+        "steps": 250,
+        "guidance_scale": 4.0,
+    })
+    image = Image.open(io.BytesIO(image_bytes))
+    image.save(f"./static/images/daily_word.jpg")
 
 
 def query(payload):
     response = requests.post(API_URL, headers=headers, json=payload)
     return response.content
-
-
-image_bytes = query({
-    "inputs": f"{daily_word_text}, {definition_text}",
-    "seed": random.randint(0, 10000000),
-    "steps": 250,
-    "guidance_scale": 4.0,
-})
-
-image = Image.open(io.BytesIO(image_bytes))
-
-image.save(f"./static/images/daily_word.jpg")

@@ -1,8 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 
-word_url = "https://www.merriam-webster.com/word-of-the-day"
-website = requests.get(word_url)
+website = requests.get("https://www.merriam-webster.com/word-of-the-day")
 
 soup = BeautifulSoup(website.text, 'html.parser')
 
@@ -14,3 +13,7 @@ definition = definition_container.find("p")
 main_atr_text = main_atr.text
 definition_text = definition.text
 daily_word_text = daily_word.text
+
+
+def scrape():
+    return daily_word_text, main_atr_text, definition_text
