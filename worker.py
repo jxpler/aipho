@@ -1,12 +1,12 @@
 from celery import Celery
 import os
 
-broker_url = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+CELERY_BROKER_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 
 app = Celery(
     'celery',
-    broker=broker_url,
-    backend=broker_url
+    broker=CELERY_BROKER_URL,
+    backend=CELERY_BROKER_URL
 )
 
 app.config_from_object('celeryconfig')
