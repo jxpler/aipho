@@ -5,7 +5,6 @@ import random
 from scraper import scrape
 import os
 from worker import Celery
-from celery.schedules import crontab
 
 API_URL = os.environ["API_URL"]
 headers = {"Authorization": os.environ["AUTH_TOKEN"]}
