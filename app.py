@@ -27,3 +27,6 @@ def about():
 
 celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080)
