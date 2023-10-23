@@ -4,7 +4,7 @@ import os
 broker_url = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 
 app = Celery(
-    'app',
+    'celery',
     broker=broker_url,
     backend=broker_url
 )
