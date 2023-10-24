@@ -6,24 +6,28 @@ from scraper import scrape
 import os
 from worker import Celery
 
-API_URL = os.environ["API_URL"]
-headers = {"Authorization": os.environ["AUTH_TOKEN"]}
+API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
+headers = {"Authorization": "Bearer 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"}
 BROKER_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 
-app = Celery('app', broker=BROKER_URL)
+celery = Celery('celery', broker=BROKER_URL)
 
-app.conf.timezone = 'UTC'
-CELERY_BEAT_SCHEDULE = {
+celery.conf.timezone = 'UTC'
+celery.conf.beat_schedule = {
     'update-every-midnight': {
-
         'task': 'generator.update',
-        'schedule': '0 4 * * *',
-    },
+        'schedule': '12:16',
+    }
 }
 
 
-@app.task
+def query(payload):
+    response = requests.post(API_URL, headers=headers, json=payload)
+    return response.content
+
+
+@celery.task
 def update():
     daily_word_text, main_atr_text, definition_text = scrape()
 
@@ -38,10 +42,6 @@ def update():
         "steps": 250,
         "guidance_scale": 4.0,
     })
+
     image = Image.open(io.BytesIO(image_bytes))
     image.save(img_path)
-
-
-def query(payload):
-    response = requests.post(API_URL, headers=headers, json=payload)
-    return response.content
