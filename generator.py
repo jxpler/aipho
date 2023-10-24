@@ -17,7 +17,7 @@ celery.conf.timezone = 'UTC'
 celery.conf.beat_schedule = {
     'update-every-midnight': {
         'task': 'generator.update',
-        'schedule': '10:35',
+        'schedule': '04:00',
     }
 }
 
