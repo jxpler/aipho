@@ -6,8 +6,8 @@ from scraper import scrape
 import os
 from worker import Celery
 
-API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
-headers = {"Authorization": "Bearer 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"}
+API_URL = os.environ.get("API_URL")
+headers = {"Authorization": os.environ.get("AUTH_TOKEN")}
 BROKER_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 
@@ -17,7 +17,7 @@ celery.conf.timezone = 'UTC'
 celery.conf.beat_schedule = {
     'update-every-midnight': {
         'task': 'generator.update',
-        'schedule': '12:16',
+        'schedule': '10:35',
     }
 }
 

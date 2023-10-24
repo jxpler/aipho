@@ -2,7 +2,6 @@ from flask import Flask, render_template
 from scraper import daily_word_text, definition_text, main_atr_text
 from celery import Celery
 import os
-from generator import update
 
 app = Flask(__name__)
 
