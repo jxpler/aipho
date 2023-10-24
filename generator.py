@@ -27,6 +27,11 @@ CELERY_BEAT_SCHEDULE = {
 def update():
     daily_word_text, main_atr_text, definition_text = scrape()
 
+    img_path = "./static/images/daily_word.jpg"
+
+    if os.path.exists(img_path):
+        os.remove(img_path)
+
     image_bytes = query({
         "inputs": f"{daily_word_text}, {definition_text}",
         "seed": random.randint(0, 10000000),
@@ -34,7 +39,7 @@ def update():
         "guidance_scale": 4.0,
     })
     image = Image.open(io.BytesIO(image_bytes))
-    image.save(f"./static/images/daily_word.jpg")
+    image.save(img_path)
 
 
 def query(payload):
