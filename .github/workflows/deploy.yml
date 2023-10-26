@@ -8,10 +8,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 20
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        node-version: '16'
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -25,9 +28,17 @@ jobs:
     - name: Build and run Gunicorn
       run: |
         gunicorn -b 0.0.0.0:8080 app:app
+    - name: Start Celery beat
+      run: |
+        celery -A worker beat --loglevel=info
+      env:
+        REDIS_URL: ${{ secrets.REDIS_URL }}
+
     - name: Start Celery worker
       run: |
         celery -A worker worker --loglevel=info
+      env:
+        REDIS_URL: ${{ secrets.REDIS_URL }}
 
     - name: Deploy to GitHub Pages
       run: |
