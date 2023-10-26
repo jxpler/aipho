@@ -27,7 +27,7 @@ jobs:
 
     - name: Build and run Gunicorn
       run: |
-        gunicorn -b 0.0.0.0:8080 app:app
+        gunicorn -b 0.0.0.0:8000 app:app
     - name: Start Celery beat
       run: |
         celery -A worker beat --loglevel=info
