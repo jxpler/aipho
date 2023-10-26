@@ -5,7 +5,7 @@ import os
 
 app = Flask(__name__)
 
-celery = Celery(app.import_name, broker=os.environ.get("REDIS_URL"))
+celery = Celery(app.import_name, broker=os.environ.get("REDIS_URL", "redis://localhost:6379/0"))
 celery.conf.update(app.config)
 celery.config_from_object('celeryconfig')
 
