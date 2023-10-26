@@ -26,6 +26,7 @@ jobs:
     - name: Build and run Gunicorn
       run: |
         gunicorn -b 0.0.0.0:8000 -w 3 -t 60 app:app
+        
     - name: Start Celery beat
       run: |
         celery -A worker beat --loglevel=info
@@ -49,7 +50,6 @@ jobs:
         git commit -m "GitHub Pages deploy by GitHub Actions"
         git push origin gh-pages
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
       API_URL: ${{ secrets.API_URL }}
       REDIS_URL: ${{ secrets.REDIS_URL }}
